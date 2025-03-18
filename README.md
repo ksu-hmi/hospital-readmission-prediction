@@ -7,10 +7,7 @@ This project predicts hospital readmissions within 30 days of discharge and anal
 ```
 hospital-readmission-prediction
 │── data
-│   ├── hospital_readmissions_final.csv
-│   ├── hospital_readmissions_only_int.csv
-│   ├── hospital_with_actual_A1C.csv
-│   ├── hospital_with_predicted_A1C.csv
+│   ├── hospital_readmissions.csv
 │── A1C_Model.ipynb
 │── A1C_Model.pkl
 │── Readmitted_Model.ipynb
@@ -24,7 +21,7 @@ hospital-readmission-prediction
 - **Readmitted_Model.ipynb** - Predictive model for hospital readmissions.  
 - **Replacing_A1C.ipynb** - Data preprocessing and feature engineering for A1C.  
 - **predict.py** - Script to test the trained model.  
-- **hospital_readmissions_final.csv** - Final dataset for model training.  
+- **hospital_readmissions.csv** - Initial dataset for model training.  
 - **Readmission_Model.pkl** - Trained readmission prediction model.  
 - **A1C_Model.pkl** - Trained A1C analysis model.  
 
