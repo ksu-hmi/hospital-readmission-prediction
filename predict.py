@@ -1,3 +1,6 @@
+import numpy as np
+import pickle
+
 def predict_readmission(Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
                         Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
                         Num_Emergency_Visits, Num_Diagnoses, A1C_Result):
