@@ -1,3 +1,13 @@
+# **Target Users**
+- Healthcare Providers: To identify and support high-risk diabetic patients.
+- Patients: To receive more personalized care and avoid unplanned readmissions.
+
+# **Tools & Technologies**
+- Python, Jupyter Notebooks                                                                                                          - -
+- GitHub for collaboration and version control
+
+# **Original Project Info (Retained Below for Reference)** Lawrence (Larry706)
+
 # **Hospital Readmission Prediction**  
 
 ## **Overview**  
