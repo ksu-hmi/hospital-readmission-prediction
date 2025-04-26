@@ -408,7 +408,7 @@ if admission == 1:
 else:
     print("Readmission is Not Required")
 
-# ***Prediction with Blood Glucose added as a condition for admission***
+# ***Prediction with Blood Glucose added as a condition for admission with BMI***
 def calculate_bmi(weight, height):
     """Function to calculate BMI based on weight and height."""
     bmi = weight / (height ** 2)
