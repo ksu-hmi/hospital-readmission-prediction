@@ -1,6 +1,6 @@
 # *** New Model: Removing "import pickle" and Creating a New Model***
 import numpy as np
-# Exalantion of change (Lawrence): One of the significant changes includes the replacement of the .pkl file/"pickle", with a new model class that has been called "MockModel", which can be seen a few lines below. This is because we were receiving an error message in regard to the file.  
+# Exalantion of code change (Lawrence): One of the significant changes includes the replacement of the .pkl file/"pickle", with a new model class that has been called "MockModel", which can be seen a few lines below. This is because we were receiving an error message in regard to the file.  
 
 def predict_readmission(
     Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
@@ -10,7 +10,7 @@ def predict_readmission(
     # Mock model logic
     class MockModel:
         def predict(self, data):
-            # Exalantion of change (Lawrence): Prediction rule: Readmission likely if inpatient visits >= 2 and A1C is abnormal. This is a relatively simple rule that can be used within the predict function. Also, it allows for a more predictable outcome based on what is input by the user. Here, index 6 represents the amount of inpatient visits, while 9 is the A1C result.
+            # Exalantion of code change (Lawrence): Prediction rule: Readmission likely if inpatient visits >= 2 and A1C is abnormal. This is a relatively simple rule that can be used within the predict function. Also, it allows for a more predictable outcome based on what is input by the user. Here, index 6 represents the amount of inpatient visits, while 9 is the A1C result.
             if data[0][6] >= 2 and data[0][9] == 0:
                 return [1]
             return [0]
