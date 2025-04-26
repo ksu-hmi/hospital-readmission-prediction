@@ -1,3 +1,69 @@
+# *** New Model: Removing "import pickle" and Creating a New Model***
+import numpy as np
+# Exalantion of change (Lawrence): One of the significant changes includes the replacement of the .pkl file/"pickle", with a new model class that has been called "MockModel", which can be seen a few lines below. This is because we were receiving an error message in regard to the file.  
+
+def predict_readmission(
+    Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+    Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+    Num_Emergency_Visits, Num_Diagnoses, A1C_Result
+):
+    # Mock model logic
+    class MockModel:
+        def predict(self, data):
+            # Exalantion of change (Lawrence): Prediction rule: Readmission likely if inpatient visits >= 2 and A1C is abnormal. This is a relatively simple rule that can be used within the predict function. Also, it allows for a more predictable outcome based on what is input by the user. Here, index 6 represents the amount of inpatient visits, while 9 is the A1C result.
+            if data[0][6] >= 2 and data[0][9] == 0:
+                return [1]
+            return [0]
+
+    model = MockModel()
+
+    data = np.array([[
+        Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+        Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+        Num_Emergency_Visits, Num_Diagnoses, A1C_Result
+    ]])
+
+    prediction = model.predict(data)
+    return prediction[0]
+
+
+# ==== Input Section ====
+
+selected_gender = input("Select a Gender (Female, Male, Other): ")
+Gender = {"Female": 0, "Male": 1}.get(selected_gender, 2)
+
+selected_admission_type = input("Select an Admission Type (Emergency, Urgent, Elective): ")
+Admission_Type = {"Emergency": 1, "Urgent": 2}.get(selected_admission_type, 0)
+
+selected_diagnosis = input("Select a Diagnosis (Heart Disease, Diabetes, Injury, Infection): ")
+Diagnosis = {"Heart Disease": 1, "Diabetes": 0, "Injury": 3}.get(selected_diagnosis, 2)
+
+Num_Lab_Procedures = int(input("Select a Number of Lab Procedures (1-99): "))
+Num_Medications = int(input("Select a Number of Medications (1-35): "))
+Num_Outpatient_Visits = int(input("Select a Number of Outpatient Visits (0-4): "))
+Num_Inpatient_Visits = int(input("Select a Number of Inpatient Visits (0-4): "))
+Num_Emergency_Visits = int(input("Select a Number of Emergency Visits (0-4): "))
+Num_Diagnoses = int(input("Select a Number of Diagnoses (1-9): "))
+
+A1C = input("Select an A1C Result (Normal, Abnormal): ")
+A1C_Result = 1 if A1C == "Normal" else 0
+
+# ==== Prediction ====
+
+admission = predict_readmission(
+    Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+    Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+    Num_Emergency_Visits, Num_Diagnoses, A1C_Result
+)
+
+# ==== Output ====
+
+if admission == 1:
+    print("Readmission is Required")
+else:
+    print("Readmission is Not Required")
+
+
 # ***Readmission prediction is based on A1C level, BMI and Blood Glucose level***
 
 def calculate_bmi(weight, height):
