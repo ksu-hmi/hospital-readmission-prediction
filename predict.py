@@ -298,6 +298,116 @@ if admission == 1:
 else:
     print("Readmission is Not Required")
 
+# ***Prediction with BMI added, along with weight (kilos) and height (meters) by extension***
+import numpy as np
+
+# Prediction function with BMI
+def predict_readmission(
+    Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+    Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+    Num_Emergency_Visits, Num_Diagnoses, A1C_Result, Diet, BMI
+):
+    class MockModel:
+        def predict(self, data):
+            inpatient_visits = data[0][6]
+            a1c = data[0][9]
+            diet = data[0][10]
+            bmi = data[0][11]
+            # Explanation of code change (Lawrence): Readmission is required if BMI is 30 or more, as the BMI is now within the obese range. 
+            # Logic:
+            # If A1C is normal → no readmission
+            if a1c == 1:
+                return [0]
+            # If BMI is 30 or more → readmission required
+            elif bmi >= 30:
+                return [1]
+            # If inpatient visits are high or diet is regular
+            elif inpatient_visits >= 2 or diet == 0:
+                return [1]
+            else:
+                return [0]
+
+    model = MockModel()
+
+    data = np.array([[
+        Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+        Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+        Num_Emergency_Visits, Num_Diagnoses, A1C_Result, Diet, BMI
+    ]])
+
+    prediction = model.predict(data)
+    return prediction[0]
+
+
+# ==== User Input Section ====
+
+selected_gender = input("Select a Gender (Female, Male, Other): ").strip()
+Gender = {"Female": 0, "Male": 1}.get(selected_gender, 2)
+
+selected_admission_type = input("Select an Admission Type (Emergency, Urgent, Elective): ").strip()
+Admission_Type = {"Emergency": 1, "Urgent": 2}.get(selected_admission_type, 0)
+
+selected_diagnosis = input("Select a Diagnosis (Heart Disease, Diabetes, Injury, Infection): ").strip()
+Diagnosis = {"Heart Disease": 1, "Diabetes": 0, "Injury": 3}.get(selected_diagnosis, 2)
+
+Num_Lab_Procedures = int(input("Select a Number of Lab Procedures (1-99): "))
+Num_Medications = int(input("Select a Number of Medications (1-35): "))
+Num_Outpatient_Visits = int(input("Select a Number of Outpatient Visits (0-4): "))
+Num_Inpatient_Visits = int(input("Select a Number of Inpatient Visits (0-4): "))
+Num_Emergency_Visits = int(input("Select a Number of Emergency Visits (0-4): "))
+Num_Diagnoses = int(input("Select a Number of Diagnoses (1-9): "))
+
+A1C = input("Select an A1C Result (Normal, Abnormal): ").strip()
+A1C_Result = 1 if A1C.lower() == "normal" else 0
+
+selected_diet = input("Select a Diet (Regular, Renal, Cardiac, Diabetic, Low Sodium): ").strip()
+Diet = {
+    "Regular": 0,
+    "Renal": 1,
+    "Cardiac": 2,
+    "Diabetic": 3,
+    "Low Sodium": 4
+}.get(selected_diet, 0)  # Default to Regular if blank/invalid
+
+# ==== BMI Input and Calculation ====
+# Explanation of code change (Lawrence): Here, the user will input their height and weight, which will then determine the BMI below. The formula of BMI = weight_kg / (height_meters raised to the 2nd power) below will be used to determine the BMI category of the user. It is important to note that we are using the metric system formula, and not the imperial system one.
+height_meters = float(input("Enter height in meters (e.g., 1.75): "))
+weight_kg = float(input("Enter weight in kilograms (e.g., 70): "))
+
+BMI = weight_kg / (height_meters ** 2)
+
+# ==== BMI Classification ====
+# Explanation of code change (Lawrence): Below is a block of code that determines the BMI, which will then classify an individual as underweight, normal weight, etc.
+if BMI < 18.5:
+    bmi_category = "Underweight"
+elif 18.5 <= BMI < 24.9:
+    bmi_category = "Normal weight"
+elif 25 <= BMI < 29.9:
+    bmi_category = "Overweight"
+elif 30 <= BMI < 34.9:
+    bmi_category = "Obesity (Class 1)"
+elif 35 <= BMI < 39.9:
+    bmi_category = "Severe Obesity (Class 2)"
+else:
+    bmi_category = "Morbid Obesity (Class 3)"
+
+print(f"BMI: {BMI:.2f} - Category: {bmi_category}")
+
+# ==== Prediction ====
+
+admission = predict_readmission(
+    Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+    Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+    Num_Emergency_Visits, Num_Diagnoses, A1C_Result, Diet, BMI
+)
+
+# ==== Output ====
+
+if admission == 1:
+    print("Readmission is Required")
+else:
+    print("Readmission is Not Required")
+
 # ***Readmission prediction is based on A1C level, BMI and Blood Glucose level***
 
 def calculate_bmi(weight, height):
