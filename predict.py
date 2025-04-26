@@ -140,6 +140,84 @@ if admission == 1:
 else:
     print("Readmission is Not Required")
 
+# ***Prediction based on 3 conditions: Number of inpatient visits is greater than or equal to two, A1C is abnormal, or they are on a regular diet.***
+import numpy as np
+
+# Prediction function with 3 conditions
+def predict_readmission(
+    Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+    Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+    Num_Emergency_Visits, Num_Diagnoses, A1C_Result, Diet
+):
+# Explanation of code change (Lawrence): The change below improves readability by assigning the names that represents each value (and their indices).
+    class MockModel:
+        def predict(self, data):
+            inpatient_visits = data[0][6]
+            diet = data[0][10]
+            a1c = data[0][9]
+# Explanation of code change (Lawrence): The three predictors from the previous two codes are now combined here. Unlike in those codes, this one has all three of them at once, contributing to a slightly more complex prediction rule. 
+            # Predict readmission if any one condition is true
+            if inpatient_visits >= 2 or diet == 0 or a1c == 0:
+                return [1]
+            return [0]
+
+    model = MockModel()
+
+    data = np.array([[
+        Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+        Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+        Num_Emergency_Visits, Num_Diagnoses, A1C_Result, Diet
+    ]])
+
+    prediction = model.predict(data)
+    return prediction[0]
+
+
+# ==== Input Section ====
+
+selected_gender = input("Select a Gender (Female, Male, Other): ")
+Gender = {"Female": 0, "Male": 1}.get(selected_gender, 2)
+
+selected_admission_type = input("Select an Admission Type (Emergency, Urgent, Elective): ")
+Admission_Type = {"Emergency": 1, "Urgent": 2}.get(selected_admission_type, 0)
+
+selected_diagnosis = input("Select a Diagnosis (Heart Disease, Diabetes, Injury, Infection): ")
+Diagnosis = {"Heart Disease": 1, "Diabetes": 0, "Injury": 3}.get(selected_diagnosis, 2)
+
+Num_Lab_Procedures = int(input("Select a Number of Lab Procedures (1-99): "))
+Num_Medications = int(input("Select a Number of Medications (1-35): "))
+Num_Outpatient_Visits = int(input("Select a Number of Outpatient Visits (0-4): "))
+Num_Inpatient_Visits = int(input("Select a Number of Inpatient Visits (0-4): "))
+Num_Emergency_Visits = int(input("Select a Number of Emergency Visits (0-4): "))
+Num_Diagnoses = int(input("Select a Number of Diagnoses (1-9): "))
+
+A1C = input("Select an A1C Result (Normal, Abnormal): ")
+A1C_Result = 1 if A1C == "Normal" else 0
+
+selected_diet = input("Select a Diet (Regular, Renal, Cardiac, Diabetic, Low Sodium): ")
+Diet = {
+    "Regular": 0,
+    "Renal": 1,
+    "Cardiac": 2,
+    "Diabetic": 3,
+    "Low Sodium": 4
+}.get(selected_diet, 0)  # Default to "Regular" if invalid
+
+# ==== Prediction ====
+
+admission = predict_readmission(
+    Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+    Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+    Num_Emergency_Visits, Num_Diagnoses, A1C_Result, Diet
+)
+
+# ==== Output ====
+
+if admission == 1:
+    print("Readmission is Required")
+else:
+    print("Readmission is Not Required")
+
 
 # ***Readmission prediction is based on A1C level, BMI and Blood Glucose level***
 
