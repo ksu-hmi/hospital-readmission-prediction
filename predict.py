@@ -408,6 +408,84 @@ if admission == 1:
 else:
     print("Readmission is Not Required")
 
+# ***Prediction with Blood Glucose added as a condition for admission***
+def calculate_bmi(weight, height):
+    """Function to calculate BMI based on weight and height."""
+    bmi = weight / (height ** 2)
+    return bmi
+
+def predict_readmission(Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+                        Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+                        Num_Emergency_Visits, Num_Diagnoses, A1C_Result, Blood_Glucose, BMI):
+    # Explanation of code change (Lawrence): If blood glucose is outside of the safe range (greater than or equal to 180 and less than or equal to 60), readmission is required. This because a blood glucose that is too low is the result of hypoglycemia, and one that is too high is hyperglycemia.
+    # Check for blood glucose level conditions
+    if Blood_Glucose <= 60 or Blood_Glucose >= 180:
+        return 1  # Readmission is required
+
+    # Check for BMI conditions
+    if BMI >= 30:
+        return 1  # Readmission is required
+
+    # Check A1C
+    if A1C_Result == 0:
+        return 1  # Readmission required
+
+    return 0  # No readmission required
+
+# ==== User Input Section ====
+
+selected_gender = input("Select a Gender (Female, Male, Other): ").strip()
+Gender = {"Female": 0, "Male": 1}.get(selected_gender, 2)
+
+selected_admission_type = input("Select an Admission Type (Emergency, Urgent, Elective): ").strip()
+Admission_Type = {"Emergency": 1, "Urgent": 2}.get(selected_admission_type, 0)
+
+selected_diagnosis = input("Select a Diagnosis (Heart Disease, Diabetes, Injury, Infection): ").strip()
+Diagnosis = {"Heart Disease": 1, "Diabetes": 0, "Injury": 3}.get(selected_diagnosis, 2)
+
+Num_Lab_Procedures = int(input("Select a Number of Lab Procedures (1-99): "))
+Num_Medications = int(input("Select a Number of Medications (1-35): "))
+Num_Outpatient_Visits = int(input("Select a Number of Outpatient Visits (0-4): "))
+Num_Inpatient_Visits = int(input("Select a Number of Inpatient Visits (0-4): "))
+Num_Emergency_Visits = int(input("Select a Number of Emergency Visits (0-4): "))
+Num_Diagnoses = int(input("Select a Number of Diagnoses (1-9): "))
+
+A1C = input("Select an A1C Result (Normal, Abnormal): ").strip()
+A1C_Result = 1 if A1C.lower() == "normal" else 0
+
+Diet = input("Select a Diet (Regular, Renal, Cardiac, Diabetic, Low Sodium): ").strip()
+# Explanation of code change (Lawrence): Below, the patient will input their blood glucose levels. This is required, as otherwise, there will be no way to know whether or not a patient's blood glucose levels are normal.
+Blood_Glucose = int(input("Enter the Blood Glucose Level (mg/dL): "))
+
+# BMI Calculation
+height = float(input("Enter height in meters (e.g., 1.75): "))
+weight = float(input("Enter weight in kilograms (e.g., 70): "))
+BMI = calculate_bmi(weight, height)
+
+print(f"BMI: {BMI:.2f}")
+if BMI < 18.5:
+    print("BMI Category: Underweight")
+elif BMI < 25:
+    print("BMI Category: Normal")
+elif BMI < 30:
+    print("BMI Category: Overweight")
+elif BMI < 35:
+    print("BMI Category: Obese")
+else:
+    print("BMI Category: Severely Obese (Class 3)")
+
+# ==== Prediction ====
+admission = predict_readmission(Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+                                Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+                                Num_Emergency_Visits, Num_Diagnoses, A1C_Result,
+                                Blood_Glucose, BMI)
+
+# ==== Output ====
+if admission == 1:
+    print("Readmission is Required")
+else:
+    print("Readmission is Not Required")
+
 # ***Readmission prediction is based on A1C level, BMI and Blood Glucose level***
 
 def calculate_bmi(weight, height):
