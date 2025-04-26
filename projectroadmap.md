@@ -1,0 +1,5 @@
+- [x] Define project goal and scope
+- [x] Fork and clone an existing related GitHub repository 
+- [x] Add project teammate to GitHub repo with appropiate access rights
+- [x] Review and document findings from the existing codebase
+- [x] Edit the README.md with updated project information
