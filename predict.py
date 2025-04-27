@@ -809,6 +809,126 @@ else:
     print("Readmission is Not Required")
 
 
+## *** Risk Score added to the model***
+## *** A1C, Blood Glucose and Diagnosis determine the readmission prediction ***
+def calculate_bmi(weight, height):
+    return weight / (height ** 2)
+
+def classify_bmi(bmi):
+    if bmi < 18.5:
+        return "Underweight"
+    elif 18.5 <= bmi < 25:
+        return "Normal"
+    elif 25 <= bmi < 30:
+        return "Overweight"
+    elif 30 <= bmi < 35:
+        return "Obese"
+    else:
+        return "Severely Obese (Class 3)"
+
+def predict_readmission(Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,
+                        Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+                        Num_Emergency_Visits, Num_Diagnoses, A1C_Value,
+                        Blood_Glucose, Diet, Height, Weight):
+
+    risk_score = 0
+    reasons = []
+
+    # Diagnosis check (case-insensitive)
+    high_risk_diagnoses = ["dka", "hhs", "severe hypoglycemia", "heart failure",
+        "acute renal failure", "chronic renal failure", "infections", "uncontrolled diabetes"]
+    if Diagnosis.lower() in high_risk_diagnoses:
+        risk_score += 1
+        reasons.append("High-risk medical condition (e.g., DKA, HHS, Severe Hypoglycemia, etc.)")
+
+    # A1C check
+
+    if A1C_Value >= 6.4:
+        risk_score += 1
+        reasons.append(f"Abnormal A1C (≥ 6.4%) - A1C: {A1C_Value}%")
+    elif 5.7 <= A1C_Value < 6.4:
+        reasons.append(f"Prediabetes A1C (5.7–6.3%) - A1C: {A1C_Value}%")
+    else:
+        reasons.append(f"Normal A1C (< 5.7%) - A1C: {A1C_Value}%")
+
+    # Blood glucose check
+    if Blood_Glucose <= 60:
+        risk_score += 1
+        reasons.append(f"Low blood glucose (≤ 60 mg/dL) - Blood Glucose: {Blood_Glucose} mg/dL")
+    elif Blood_Glucose > 180:
+        risk_score += 1
+        reasons.append(f"High blood glucose (> 180 mg/dL) - Blood Glucose: {Blood_Glucose} mg/dL")
+    else:
+        reasons.append(f"Normal blood glucose (70–140 mg/dL) - Blood Glucose: {Blood_Glucose} mg/dL")
+
+    # Calculate BMI
+    bmi = calculate_bmi(Weight, Height)
+    bmi_category = classify_bmi(bmi)
+
+    # Determine final decision
+    if risk_score >= 3:
+        status = "Readmission is Required"
+    elif risk_score >= 1:
+        status = "Monitor Patient Closely"
+    else:
+        status = "Readmission is Not Required"
+
+    # Output section
+    print(f"\nBMI: {bmi:.2f}")
+    print(f"BMI Category: {bmi_category}")
+    if bmi >= 30:
+        print("Advisory: Consider speaking with your doctor about a healthy weight plan.")
+
+    # Reason explanation in a sentence
+    print(f"\nReadmission is required due to: {', '.join(reasons)}")
+    print(f"\nRisk Score: {risk_score}")
+    print(f"Final Decision: {status}")
+
+# Collect inputs from the user
+selected_gender = input("Select a Gender (Female, Male, Other): ")
+if selected_gender == "Female":
+    Gender = 0
+elif selected_gender == "Male":
+    Gender = 1
+else:
+    Gender = 2
+
+Selected_Admission_Type = input("Select an Admission Type (Emergency, Urgent, Elective): ")
+if Selected_Admission_Type == "Emergency":
+    Admission_Type = 1
+elif Selected_Admission_Type == "Urgent":
+    Admission_Type = 2
+else:
+    Admission_Type = 0
+
+Selected_Diagnosis = input("Select a Diagnosis (DKA, HHS, Severe Hypoglycemia, Heart Failure, Acute Renal Failure, Chronic Renal Failure, Infections, Uncontrolled Diabetes, Other): ")
+if Selected_Diagnosis.lower() in ["dka", "hhs", "severe hypoglycemia", "heart failure", "acute renal failure", "chronic renal failure", "infections", "uncontrolled diabetes"]:
+    Diagnosis = Selected_Diagnosis.lower()
+else:
+    Diagnosis = "Other"
+
+Num_Lab_Procedures = int(input("Select a Number of Lab Procedures (1-99): "))
+Num_Medications = int(input("Select a Number of Medications (1-35): "))
+Num_Outpatient_Visits = int(input("Select a Number of Outpatient Visits (0-4): "))
+Num_Inpatient_Visits = int(input("Select a Number of Inpatient Visits (0-4): "))
+Num_Emergency_Visits = int(input("Select a Number of Emergency Visits (0-4): "))
+Num_Diagnoses = int(input("Select a Number of Diagnoses (1-9): "))
+
+A1C_Value = float(input("Enter A1C percentage (e.g., 5.6): "))
+
+Diet = input("Select a Diet (Regular, Renal, Cardiac, Diabetic, Low Sodium): ")
+
+Blood_Glucose = int(input("Enter the Blood Glucose Level (mg/dL): "))
+
+Height = float(input("Enter height in meters (e.g., 1.75): "))
+Weight = float(input("Enter weight in kilograms (e.g., 70): "))
+
+# Prediction based on the inputs
+predict_readmission(Gender, Admission_Type, Diagnosis, Num_Lab_Procedures, 
+                    Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits, 
+                    Num_Emergency_Visits, Num_Diagnoses, A1C_Value, Blood_Glucose, 
+                    Diet, Height, Weight)
+
 
 
 # ***Original version retained for reference ***
