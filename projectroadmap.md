@@ -3,3 +3,6 @@
 - [x] Add project teammate to GitHub repo with appropiate access rights
 - [x] Review and document findings from the existing codebase
 - [x] Edit the README.md with updated project information
+- [x] Create and commit this projectroadmap.md file to the repo
+- [x] Run existing Jupyter notebooks successfully
+- [x] Identify key features from the dataset
