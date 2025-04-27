@@ -1057,6 +1057,118 @@ predict_readmission(Age, Gender, Admission_Type, Diagnosis, Num_Lab_Procedures, 
 
 
 
+## **** Medication adherence added to the model ****
+
+def predict_readmission(Age, Gender, Admission_Type, Diagnosis, Num_Lab_Procedures,Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+                        Num_Emergency_Visits, Num_Diagnoses, A1C_Value, Blood_Glucose, Diet, Height, Weight, Med_Adherence):
+
+    reasons = []  # List to store reasons for readmission
+    risk_score = 0  # Tracks overall risk score
+
+    # Dictionary of high-risk conditions
+    high_risk_conditions = (("DKA", "Diabetic Ketoacidosis"),("HHS", "Hyperosmolar Hyperglycemic State"),
+        ("Severe Hypoglycemia", "Severe drop in blood sugar"), ("Heart Failure", "Chronic heart condition"),
+        ("Acute Renal Failure", "Sudden kidney failure"),("Chronic Renal Failure", "Long-term kidney disease"),
+        ("Infections", "Various types of infections"),("Uncontrolled Diabetes", "Poorly managed diabetes"))
+
+    # Check for age-related risk
+    if Age >= 45:
+        risk_score += 1
+        reasons.append(f"Age 45 or above may increase the risk of readmission.")
+
+    # Check for admission type
+    if Admission_Type == "Emergency":
+        risk_score += 1
+        reasons.append(f"Emergency admission increases readmission risk.")
+
+    # Check if diagnosis is in high-risk conditions
+    for condition in high_risk_conditions:
+        if Diagnosis == condition[0]:
+            risk_score += 1
+            reasons.append(f"Diagnosis of {condition[0]} ({condition[1]}) is a high-risk condition for readmission.")
+
+    # Check A1C value (blood sugar control indicator)
+    if A1C_Value >= 6.4:
+        risk_score += 1
+        reasons.append(f"Abnormal A1C (≥ 6.4%) - A1C: {A1C_Value}%")
+
+    # Check blood glucose levels for abnormal values
+    if Blood_Glucose <= 60:
+        risk_score += 1
+        reasons.append(f"Low blood glucose (≤ 60 mg/dL) - Blood Glucose: {Blood_Glucose} mg/dL")
+    elif Blood_Glucose >= 180:
+        risk_score += 1
+        reasons.append(f"High blood glucose (≥ 180 mg/dL) - Blood Glucose: {Blood_Glucose} mg/dL")
+
+    # Check diet-related risk
+    if Diet == "Regular":
+        risk_score += 1
+        reasons.append(f"Regular diet may increase the risk of readmission.")
+
+    # Store medication adherence information (not affecting risk score)
+    if Med_Adherence == "yes":
+        reasons.append(f"Patient reports taking medications regularly.")
+    else:
+        reasons.append(f"Patient reports non-adherence to prescribed medications.")
+
+    # Calculate BMI (Body Mass Index)
+    BMI = Weight / (Height ** 2)
+
+    # Categorize BMI status
+    if BMI < 18.5:
+        BMI_Category = "Underweight"
+    elif 18.5 <= BMI < 24.9:
+        BMI_Category = "Normal weight"
+    elif 25 <= BMI < 29.9:
+        BMI_Category = "Overweight"
+    else:
+        BMI_Category = "Obese"
+
+    # Record BMI information
+    reasons.append(f"BMI: {format(BMI, '.2f')} - BMI Category: {BMI_Category}")
+
+    # Determine readmission requirement based on risk score
+    if risk_score >= 3:
+        return (f"\nReadmission is Required due to:\n"  # Added a newline before the statement
+                f"Reason(s) considered:\n"
+                + "\n".join([f"- {reason}" for reason in reasons]) + f"\n\n"
+                f"Risk Score: {risk_score}\n"
+                f"Final Decision: Readmission is Required")
+    else:
+        return (f"\nReadmission is Not Required due to:\n"  # Added a newline before the statement
+                f"Reason(s) considered:\n"
+                + "\n".join([f"- {reason}" for reason in reasons]) + f"\n\n"
+                f"Risk Score: {risk_score}\n"
+                f"Final Decision: Readmission is Not Required")
+
+# Collect inputs from the user
+print("Enter patient information below:")
+
+Age = int(input("Enter your age: "))
+Gender = input("Select a Gender (Female, Male, Other): ").strip()
+Admission_Type = input("Select an Admission Type (Emergency, Urgent, Elective): ").strip()
+Diagnosis = input("Select a Diagnosis (DKA, HHS, Severe Hypoglycemia, Heart Failure, Acute Renal Failure, Chronic Renal Failure, Infections, Uncontrolled Diabetes, Other): ").strip()
+Num_Lab_Procedures = int(input("Select a Number of Lab Procedures (1-99): "))
+Num_Medications = int(input("Select a Number of Medications (1-35): "))
+Num_Outpatient_Visits = int(input("Select a Number of Outpatient Visits (0-4): "))
+Num_Inpatient_Visits = int(input("Select a Number of Inpatient Visits (0-4): "))
+Num_Emergency_Visits = int(input("Select a Number of Emergency Visits (0-4): "))
+Num_Diagnoses = int(input("Select a Number of Diagnoses (1-9): "))
+A1C_Value = float(input("Enter A1C percentage (e.g., 5.6): "))
+Blood_Glucose = int(input("Enter the Blood Glucose Level (mg/dL): "))
+Diet = input("Select a Diet (Regular, Renal, Cardiac, Diabetic, Low Sodium): ").strip()
+Height = float(input("Enter height in meters (e.g., 1.75): "))
+Weight = float(input("Enter weight in kilograms (e.g., 70): "))
+Med_Adherence = input("Are you currently taking your prescribed medications regularly? (Yes/No): ").strip().lower()
+
+# Make readmission prediction based on inputs
+admission = predict_readmission(Age, Gender, Admission_Type, Diagnosis, Num_Lab_Procedures, Num_Medications, Num_Outpatient_Visits, Num_Inpatient_Visits,
+Num_Emergency_Visits, Num_Diagnoses, A1C_Value, Blood_Glucose, Diet, Height, Weight, Med_Adherence)
+
+# Display the result
+print(admission)
+
+
 
 # ***Original version retained for reference ***
 # ***Original code kept for reference***
