@@ -1,3 +1,13 @@
+# ** Predictive Model for Hospital Readmission in Diabetic Patients **
+
+# **Project overview**
+This project aims to refine and customize an existing predictive model for hospital readmissions in diabetic patients. By incorporating clinical indicators such as HbA1c, blood sugar levels, demographic data, comorbidities, and diet, the initiative seeks to improve accuracy in forecasting readmission risks. The additional factors provide a more comprhensive understanding of patient health, ultimately enhancing care strategies and optimizing resource allocation.
+
+Objectives
+Extend and refine the original model for academic research and learning.
+Emphasize specific predictors relevant to diaetic patient care.
+Document findings and progress throughout the development phase.
+
 # **Target Users**
 - Healthcare Providers: To identify and support high-risk diabetic patients.
 - Patients: To receive more personalized care and avoid unplanned readmissions.
