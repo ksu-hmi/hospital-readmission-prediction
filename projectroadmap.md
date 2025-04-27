@@ -6,3 +6,8 @@
 - [x] Create and commit this projectroadmap.md file to the repo
 - [x] Run existing Jupyter notebooks successfully
 - [x] Identify key features from the dataset
+- [x] Enhance predict.py to include diagnosis, A1C, and blood glucose in decision logic 
+- [x] Update diagnosis options to reflect critical conditions 
+- [x] Create a new input flow for more realistic user simulation 
+- [x] Clean and organize predict.py for better readability and structure 
+- [x] Commit updated logic with concise messages and titles
